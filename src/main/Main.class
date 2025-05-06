@@ -1,0 +1,55 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+package src.main;
+
+import java.io.PrintStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
+import src.managers.BookingManager;
+import src.managers.FlightManager;
+import src.models.Admin;
+import src.models.Booking;
+import src.models.Flight;
+import src.models.Passenger;
+
+public class Main {
+   public Main() {
+   }
+
+   public static void main(String[] var0) {
+      Scanner var1 = new Scanner(System.in);
+      new Admin(1, "admin1", "adminpass");
+      Passenger var3 = new Passenger(2, "john_doe", "pass123");
+      FlightManager var4 = FlightManager.getInstance();
+      var4.addFlight(new Flight(1, "FL001", "New York", "London", "2025-06-01 10:00", 5));
+      var4.addFlight(new Flight(2, "FL002", "Paris", "Berlin", "2025-06-02 14:00", 3));
+      System.out.println("\nAll Flights:");
+      Iterator var5 = var4.getAllFlights().iterator();
+
+      PrintStream var10000;
+      int var10001;
+      while(var5.hasNext()) {
+         Flight var6 = (Flight)var5.next();
+         var10000 = System.out;
+         var10001 = var6.getId();
+         var10000.println("Flight ID: " + var10001 + " | " + var6.getOrigin() + " -> " + var6.getDestination());
+      }
+
+      BookingManager var10 = BookingManager.getInstance();
+      System.out.println("\nEnter Flight ID to Book:");
+      int var11 = var1.nextInt();
+      var10.bookFlight(var3.getId(), var11);
+      List var7 = var10.getBookingsForUser(var3.getId());
+      System.out.println("\nPassenger's Bookings:");
+      Iterator var8 = var7.iterator();
+
+      while(var8.hasNext()) {
+         Booking var9 = (Booking)var8.next();
+         var10000 = System.out;
+         var10001 = var9.getId();
+         var10000.println("Booking ID: " + var10001 + " | Flight ID: " + var9.getFlightId() + " | Date: " + var9.getBookingDate());
+      }
+
+      var1.close();
+   }
+}
