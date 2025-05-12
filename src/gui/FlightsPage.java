@@ -1,6 +1,6 @@
 package gui;
 
-import managers.FlightManager;
+import managers.FlightManager; // Singleton Pattern Used
 import models.Flight;
 
 import javax.swing.*;
@@ -10,6 +10,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+/**
+ * Design Patterns Used:
+ * ---------------------
+ * ✅ Singleton Pattern (via FlightManager)
+ *    - Ensures centralized and consistent access to all flight data.
+ *    - Simplifies state management throughout the app.
+ *     *    - Prevents multiple instances 
+ * ✅ MVC Pattern (View Component)
+ *    - FlightsPage represents the 'View' in the MVC architecture.
+ *    - It fetches data from the model (FlightManager/Flight) and updates the UI accordingly.
+ */
 public class FlightsPage extends JPanel {
     private JPanel cardContainer;
     private DefaultTableModel tableModel;
@@ -68,12 +79,17 @@ public class FlightsPage extends JPanel {
         refreshFlightData();
     }
 
+    /**
+     * MVC Controller Logic:
+     * ---------------------
+     * Refreshes the data from the model (FlightManager),
+     * updates both the table and the cards in the UI (View).
+     */
     private void refreshFlightData() {
         tableModel.setRowCount(0);
         cardContainer.removeAll();
 
-        List<Flight> flights = FlightManager.getInstance().getAllFlights();
-        System.out.println("Flights in memory: " + flights.size());
+        List<Flight> flights = FlightManager.getInstance().getAllFlights(); // Singleton usage
         for (Flight f : flights) {
             tableModel.addRow(new Object[] {
                 f.getId(), f.getFlightNumber(), f.getOrigin(),
@@ -110,7 +126,7 @@ public class FlightsPage extends JPanel {
                 int confirm = JOptionPane.showConfirmDialog(null, "Delete this flight?", "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     FlightManager.getInstance().removeFlight(f.getId());
-                    refreshFlightData();
+                    refreshFlightData(); // Reflect changes immediately
                 }
             });
 
@@ -123,6 +139,11 @@ public class FlightsPage extends JPanel {
         cardContainer.repaint();
     }
 
+    /**
+     * MVC Controller Logic:
+     * ---------------------
+     * Handles user input via dialog, interacts with the model to save new data.
+     */
     private void showAddFlightDialog() {
         JTextField flightNo = new JTextField();
         JTextField origin = new JTextField();

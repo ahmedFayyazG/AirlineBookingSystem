@@ -17,6 +17,18 @@ public class DatabaseManager {
     private static final String USER = "postgres";           // your PostgreSQL username
     private static final String PASSWORD = "Islamabad@000";  // your PostgreSQL password
 
+ // Ensure PostgreSQL driver is loaded
+ static {
+    try {
+        Class.forName("org.postgresql.Driver");  // Load PostgreSQL JDBC driver
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+}
+
+
+
+
     /**
      * Factory Method
      * ----------------------------

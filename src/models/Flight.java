@@ -1,6 +1,12 @@
 package models;
 
-
+/**
+ * ✅ Design Pattern: Data Transfer Object (DTO) / Plain Old Java Object (POJO)
+ * ----------------------------------------------------------------------------
+ * This class is used to encapsulate and transfer flight data across application layers.
+ *
+ 
+ */
 public class Flight {
     private int id;
     private String flightNumber;

@@ -7,17 +7,32 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ✅ Design Pattern: Singleton
+ * ----------------------------
+ * This class uses the Singleton Pattern to ensure only one instance of UserManager exists.
+ * 
+ * 🔍 Why Singleton?
+ * - Centralized control of user operations (registration, login, etc.).
+ * - Efficient reuse of shared logic without creating multiple instances.
+ */
 public class UserManager {
     private static UserManager instance;
 
+    // Private constructor to prevent instantiation
     private UserManager() {}
 
+    // Global access point to the single instance
     public static UserManager getInstance() {
         if (instance == null) {
             instance = new UserManager();
         }
         return instance;
     }
+
+    /**
+     * Registers a new user in the database.
+     */
     public boolean registerUser(User user) {
         String sql = "INSERT INTO users (first_name, last_name, email, phone, username, password, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
@@ -40,10 +55,10 @@ public class UserManager {
             return false;
         }
     }
-    
 
-
-
+    /**
+     * Allows the admin or system to programmatically create users.
+     */
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (first_name, last_name, email, phone, username, password, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
@@ -65,6 +80,9 @@ public class UserManager {
         }
     }
 
+    /**
+     * Validates user credentials for login.
+     */
     public User validateUser(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = DatabaseManager.getConnection();
@@ -93,6 +111,9 @@ public class UserManager {
         return null;
     }
 
+    /**
+     * Returns a list of all users in the system.
+     */
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";

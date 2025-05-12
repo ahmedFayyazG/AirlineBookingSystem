@@ -1,7 +1,7 @@
 package gui;
 
-import managers.BookingManager;
-import managers.FlightManager;
+import managers.BookingManager;   // Singleton pattern
+import managers.FlightManager;    // Singleton pattern
 import models.Booking;
 import models.Flight;
 
@@ -12,6 +12,21 @@ import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * DESIGN PATTERNS USED:
+ * ---------------------
+ * ✅ MVC (Model-View-Controller)
+ *    - This class acts as the View + Controller.
+ *    - It interacts with the model layer (FlightManager, BookingManager, Flight).
+ *
+ * ✅ Singleton
+ *    - FlightManager and BookingManager are used via getInstance()
+ *    - Guarantees only one instance manages flights/bookings consistently across app.
+ *
+ * ✅ Strategy (View Switching via CardLayout)
+ *    - Panel switching between 'flights' and 'myflights' views based on user actions.
+ *    - Makes it easy to expand UI later.
+ */
 public class PassengerDashboard extends JFrame {
     private JPanel mainContentPanel;
     private int passengerId;
@@ -31,7 +46,7 @@ public class PassengerDashboard extends JFrame {
 
         JPanel navBar = createNavBar();
         JPanel sidebar = createSidebar();
-        mainContentPanel = new JPanel(new CardLayout());
+        mainContentPanel = new JPanel(new CardLayout()); // Strategy pattern via CardLayout
 
         JPanel flightsPage = createFlightsPage();
         JPanel bookingsPage = createBookingsPage();
@@ -63,7 +78,7 @@ public class PassengerDashboard extends JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 dispose();
-                new LoginFrame();
+                new LoginFrame(); // Navigates back to login view
             }
         });
 
@@ -97,6 +112,8 @@ public class PassengerDashboard extends JFrame {
             btn.setFocusPainted(false);
 
             btn.addActionListener(e -> {
+                // DESIGN PATTERN: Strategy
+                // Switching views using a layout strategy
                 CardLayout cl = (CardLayout) mainContentPanel.getLayout();
                 cl.show(mainContentPanel, item);
             });
@@ -145,7 +162,7 @@ public class PassengerDashboard extends JFrame {
 
     private void loadFlights(String query) {
         flightsContainer.removeAll();
-        List<Flight> flights = FlightManager.getInstance().getAllFlights();
+        List<Flight> flights = FlightManager.getInstance().getAllFlights(); // Singleton
 
         if (!query.isEmpty()) {
             flights = flights.stream()
@@ -188,10 +205,10 @@ public class PassengerDashboard extends JFrame {
             bookBtn.setFocusPainted(false);
             bookBtn.setPreferredSize(new Dimension(100, 35));
             bookBtn.addActionListener(e -> {
-                boolean booked = BookingManager.getInstance().bookFlight(passengerId, f.getId());
+                boolean booked = BookingManager.getInstance().bookFlight(passengerId, f.getId()); // Singleton
                 if (booked) {
                     JOptionPane.showMessageDialog(this, "Flight booked successfully!");
-                    reloadBookingsPage();
+                    reloadBookingsPage(); // Immediately update bookings
                 } else {
                     JOptionPane.showMessageDialog(this, "Booking failed. No available seats.");
                 }
@@ -241,7 +258,7 @@ public class PassengerDashboard extends JFrame {
                 int bookingId = (int) bookingsModel.getValueAt(selected, 0);
                 int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to cancel this booking?", "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    boolean success = BookingManager.getInstance().cancelBooking(bookingId);
+                    boolean success = BookingManager.getInstance().cancelBooking(bookingId); // Singleton
                     if (success) {
                         JOptionPane.showMessageDialog(this, "Booking canceled.");
                         mainContentPanel.remove(1);
@@ -260,7 +277,7 @@ public class PassengerDashboard extends JFrame {
         bottomPanel.add(cancelButton);
         bookingsPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        List<Booking> bookings = BookingManager.getInstance().getBookingsForUser(passengerId);
+        List<Booking> bookings = BookingManager.getInstance().getBookingsForUser(passengerId); // Singleton
         for (Booking b : bookings) {
             Flight flight = FlightManager.getInstance().findFlightById(b.getFlightId());
             if (flight != null) {
